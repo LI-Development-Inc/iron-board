@@ -1,0 +1,46 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    background: #f4f4f4;
+}
+
+.header, .footer {
+    background: #222;
+    color: white;
+    padding: 1rem;
+}
+
+.header a {
+    color: white;
+    margin-right: 1rem;
+    text-decoration: none;
+}
+
+.container {
+    padding: 1rem;
+}
+
+.board-list li {
+    margin-bottom: 1rem;
+}
+
+.thread-preview {
+    background: white;
+    padding: 0.75rem;
+    margin-bottom: 0.5rem;
+}
+
+.post {
+    background: white;
+    padding: 0.75rem;
+    margin-bottom: 0.5rem;
+}
+
+textarea {
+    width: 100%;
+    min-height: 80px;
+}
+
+button {
+    margin-top: 0.5rem;
+}

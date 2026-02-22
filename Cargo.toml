@@ -1,0 +1,25 @@
+[workspace]
+resolver = "3"
+members = [
+    "bin/rusty-board",
+    "crates/models",
+    "crates/storage",
+    "crates/services",
+    "crates/auth",
+    "crates/config",
+    "crates/api"
+]
+
+[workspace.package]
+edition = "2024"
+version = "0.0.1"
+license = "MIT"
+authors = ["LaughingMan Development"]
+description = "An imageboard in rust"
+# documentation = "https://example.com/" 
+
+# list only shared dependencies
+[workspace.dependencies]
+#serde
+#tokio
+#

@@ -1,0 +1,19 @@
+[package]
+name = "rusty-board"
+version.workspace = true
+edition.workspace = true
+
+[dependencies]
+tokio = { version = "1", features = ["full"] }
+axum = "0.7"
+tower-http = { version = "0.5", features = ["fs"] }
+
+tracing = "0.1"
+tracing-subscriber = "0.3"
+
+models = { path = "../../crates/models" }
+storage = { path = "../../crates/storage" }
+services = { path = "../../crates/services" }
+auth = { path = "../../crates/auth" }
+config = { path = "../../crates/config" }
+api = { path = "../../crates/api" }

@@ -1,0 +1,17 @@
+[package]
+name = "api"
+version.workspace = true
+edition.workspace = true
+
+[dependencies]
+axum = "0.7"
+tokio = { version = "1", features = ["full"] }
+serde = { version = "1", features = ["derive"] }
+uuid = { version = "1", features = ["v4", "serde"] }
+askama = "0.12"
+tower = "0.4"
+
+models = { path = "../models" }
+services = { path = "../services" }
+storage = { path = "../storage" }
+auth = { path = "../auth" }

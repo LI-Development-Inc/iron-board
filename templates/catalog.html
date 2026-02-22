@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h2>Catalog</h2>
+
+<div class="catalog-grid">
+    {% for thread in threads %}
+        {% include "components/thread_preview.html" %}
+    {% endfor %}
+</div>
+
+{% endblock %}

@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h2>{{ thread.title }}</h2>
+
+<div class="posts">
+    {% for post in posts %}
+        {% include "components/post.html" %}
+    {% endfor %}
+</div>
+
+<hr>
+
+<form method="post" action="/posts">
+    <input type="hidden" name="thread_id" value="{{ thread.id }}">
+    <textarea name="content" placeholder="Write a reply..." required></textarea>
+    <button type="submit">Post Reply</button>
+</form>
+
+{% endblock %}
