@@ -5,8 +5,8 @@
 //! - All validation rules live here.
 //! - All UUID generation happens here.
 //! - All timestamps are created here.
-//! - This crate may call the storage layer.
-//! - This crate MUST NOT contain SQL.
+//! - This crate calls the storage layer only through Storage types.
+//! - This crate MUST NOT contain SQL or DB implementation details.
 //!
 //! End of File Notes:
 //! Keep this layer as the system's rule authority.
@@ -14,24 +14,34 @@
 use uuid::Uuid;
 use time::OffsetDateTime;
 
-use models::{Board, Thread, Post, User, Role};
+use models::{Board, Thread, Post};
 use storage::{
     board_repository,
     thread_repository,
     post_repository,
     user_repository,
     session_repository,
+    StorageError,
+    DbConnection,
 };
 
+/// Errors returned from service operations.
 #[derive(Debug, thiserror::Error)]
 pub enum ServiceError {
+    /// A business logic or validation error occurred.
     #[error("Validation error: {0}")]
     Validation(String),
 
+    /// A storage layer error occurred.
     #[error("Storage error: {0}")]
-    Storage(#[from] storage::StorageError),
+    Storage(#[from] StorageError),
 }
 
+/// Core service facade.
+///
+/// This struct groups business logic into a single type.
+/// Actual methods are stateless and could be free functions;
+/// grouping them makes mocking and abstraction easier.
 pub struct ServiceLayer;
 
 impl ServiceLayer {
@@ -39,8 +49,9 @@ impl ServiceLayer {
     // Board Logic
     // =========================
 
+    /// Create a new board with validation.
     pub fn create_board(
-        conn: &rusqlite::Connection,
+        conn: &DbConnection,
         name: String,
         description: String,
     ) -> Result<Board, ServiceError> {
@@ -61,8 +72,9 @@ impl ServiceLayer {
         Ok(board)
     }
 
+    /// List all boards.
     pub fn list_boards(
-        conn: &rusqlite::Connection,
+        conn: &DbConnection,
     ) -> Result<Vec<Board>, ServiceError> {
         Ok(board_repository::get_all(conn)?)
     }
@@ -71,8 +83,9 @@ impl ServiceLayer {
     // Thread Logic
     // =========================
 
+    /// Create a thread inside a board.
     pub fn create_thread(
-        conn: &rusqlite::Connection,
+        conn: &DbConnection,
         board_id: Uuid,
         title: String,
     ) -> Result<Thread, ServiceError> {
@@ -97,8 +110,9 @@ impl ServiceLayer {
     // Post Logic
     // =========================
 
+    /// Create a post inside a thread.
     pub fn create_post(
-        conn: &rusqlite::Connection,
+        conn: &DbConnection,
         thread_id: Uuid,
         content: String,
     ) -> Result<Post, ServiceError> {
@@ -119,7 +133,6 @@ impl ServiceLayer {
         Ok(post)
     }
 }
-
 
 
 /// TESTS:

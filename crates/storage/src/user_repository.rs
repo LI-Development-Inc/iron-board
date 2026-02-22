@@ -10,10 +10,11 @@
 //! End Notes:
 //! Pure SQLite repository.
 
-use rusqlite::{params, Connection, Result};
+use rusqlite::{params, Connection};
 use uuid::Uuid;
-use crate::schema;
+
 use models::User;
+use crate::StorageError;
 
 pub struct UserRepository<'a> {
     pub conn: &'a Connection,
@@ -24,7 +25,7 @@ impl<'a> UserRepository<'a> {
         Self { conn }
     }
 
-    pub fn create(&self, user: &User) -> Result<()> {
+    pub fn create(&self, user: &User) -> Result<(), StorageError> {
         self.conn.execute(
             "INSERT INTO users (id, username, password_hash, role)
              VALUES (?1, ?2, ?3, ?4)",
@@ -38,22 +39,27 @@ impl<'a> UserRepository<'a> {
         Ok(())
     }
 
-    pub fn find_by_username(&self, username: &str) -> Result<Option<User>> {
+    pub fn find_by_username(
+        &self,
+        username: &str,
+    ) -> Result<Option<User>, StorageError> {
         let mut stmt = self.conn.prepare(
-            "SELECT id, username, password_hash, role FROM users WHERE username = ?1"
+            "SELECT id, username, password_hash, role
+             FROM users
+             WHERE username = ?1",
         )?;
 
         let mut rows = stmt.query(params![username])?;
 
         if let Some(row) = rows.next()? {
+            let role_str: String = row.get(3)?;
+            let role = role_str.parse().unwrap();
+
             Ok(Some(User {
                 id: Uuid::parse_str(&row.get::<_, String>(0)?).unwrap(),
                 username: row.get(1)?,
                 password_hash: row.get(2)?,
-                role: {
-                    let role_str: String = row.get(3)?;
-                    role_str.parse().unwrap()
-                },
+                role,
             }))
         } else {
             Ok(None)

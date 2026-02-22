@@ -24,6 +24,8 @@ pub enum StorageError {
     Database(#[from] rusqlite::Error),
 }
 
+pub use rusqlite::Connection as DbConnection;
+
 
 /// TESTS
 /// 
